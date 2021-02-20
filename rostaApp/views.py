@@ -20,9 +20,14 @@ import datetime
                 # new rota row
                 # push staff
                 # for each date_obj to (date_obj + 14 days) get Alloc where date & staff
-                 # if Alloc push to rotarow
+                # shift = next((x for x in Alloc if (x.staff_id == staff.staffId and x.date == date_obj and x.session == 'AM' )), None)
+                 # if shift  push to rotarow
                  # else push empty duty
-                # next day
+                # shift = next((x for x in Alloc if (x.staff_id == staff.staffId and x.date == date_obj and x.session == 'PM' )), None)
+                 # if shift  push to rotarow
+                 # else push empty duty
+
+                # next day 
             #push rotarow to rota
             # next staff 
           #   
