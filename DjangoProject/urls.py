@@ -26,5 +26,6 @@ urlpatterns = [
     path(r'api-token-refresh/', refresh_jwt_token),
     path('messages/', include('myMessages.urls')),
     path('library/', include('libraryApp.urls')),
+    path('rosta/', include('rostaApp.urls')),
 ]
 
