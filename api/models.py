@@ -19,6 +19,8 @@ class Staff(models.Model):
     def __str__(self):
         return self.userName
 
+    
+
 class Duty(models.Model):
     dutyId = models.AutoField(primary_key = True)
     dutyType = models.CharField(max_length = 50)   

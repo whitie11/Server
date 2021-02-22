@@ -4,11 +4,25 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import datetime
-from api.models import Alloc
+from api.models import Alloc, Staff
 from datetime import timedelta
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+import json
+from json import JSONEncoder
+from django.core.serializers import serialize
+from django.forms import model_to_dict
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Model
 
 # Create your views here.
+
+class ExtendedEncoder(DjangoJSONEncoder):
+
+    def default(self, o):
+        if isinstance(o, Model):
+            return model_to_dict(o)
+
+        return super().default(o)
 
 
 @api_view(['POST'])
@@ -22,33 +36,41 @@ def duties_from_date(request):
         date_end = date_start + timedelta(days=14)
         staffArr = data['staffList']
         savedDuties = Alloc.objects.filter(date__range=(date_start, date_end))
-        print(savedDuties)
-        rota = []
+        rotaArray = []
         for staff in staffArr:
-         rotaRow = []
-         rotaRow.append(staff)
-         test_date = date_start
-         while test_date < date_end:
-            duty = next((x.duty for x in savedDuties if (
-                x.staff_id == staff and x.date== test_date.date() and x.session == 'AM')), None)
-            if duty:
-             rotaRow.append(duty)
-            else:
-             rotaRow.append(None)
-             
-            duty = next((x.duty for x in savedDuties if (
-                x.staff_id == staff and x.date== test_date.date() and x.session == 'PM')), None)
-            if duty:
-             rotaRow.append(duty)
-            else:
-             rotaRow.append(None)
-            test_date += timedelta(days=1)
-         rota.append(rotaRow)
+            rotaRow = []
+            s = Staff.objects.get(pk=staff)
+            rotaRow.append(s)
+            dutyRow = []
+            test_date = date_start
+
+            while test_date < date_end:
+                duty = next((x.duty for x in savedDuties if (
+                    x.staff_id == staff and x.date == test_date.date() and x.session == 'AM')), None)
+                if duty:
+                    dutyRow.append(duty)
+                else:
+                    dutyRow.append(None)
+
+                duty1 = next((x.duty for x in savedDuties if (
+                    x.staff_id == staff and x.date == test_date.date() and x.session == 'PM')), None)
+                if duty1:
+                    dutyRow.append(duty1)
+                else:
+                    dutyRow.append(None)
+
+                
+                test_date += timedelta(days=1)
+                
+            rotaRow.append(dutyRow) 
+                # dutyRow = []
+            rotaArray.append(rotaRow)
+            
         # next staff
-        x = rota
-        return HttpResponse("Hello, world. You're at duties from date.")
-          #   
-#         messages_from_date = MyMessage.objects.filter(datePosted__gt=date_obj)
-#         serialiser = MyMessageSerializer(messages_from_date, many=True)
-#         return JsonResponse(serialiser.data, safe=False)
-#     return JsonResponse(serialiser.errors, status=400)
+        x = list(rotaArray)
+
+        
+        res = json.dumps(x, cls=ExtendedEncoder)
+
+        return HttpResponse(res, content_type="application/json")
+
