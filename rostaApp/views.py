@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import datetime
-from api.models import Alloc, Staff
+from api.models import Alloc, Duty, Staff
 from datetime import timedelta
 from django.http import HttpResponse, JsonResponse
 import json
@@ -13,6 +13,7 @@ from django.core.serializers import serialize
 from django.forms import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Model
+from api.serializers import DutySerializer
 
 # Create your views here.
 
@@ -23,6 +24,17 @@ class ExtendedEncoder(DjangoJSONEncoder):
             return model_to_dict(o)
 
         return super().default(o)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) 
+@csrf_exempt
+def get_duties(request):
+    if request.method == 'GET':
+        duties = Duty.objects.all()
+        serialiser = DutySerializer(duties, many=True)
+        return JsonResponse(serialiser.data, safe=False)
+    return JsonResponse(serialiser.errors, status=400)     
+
 
 
 @api_view(['POST'])
