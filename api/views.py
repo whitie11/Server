@@ -11,6 +11,7 @@ from django.contrib import messages
 from api.serializers import ToDoSerializer, UserSerializer
 from api.models import ToDo
 from django.contrib.auth.models import User
+import datetime
 
 # Create your views here.
 def register(request):
@@ -87,10 +88,18 @@ def alloc_list(request):
         serialiser = AllocSerializer(alloc_all, many = True)
         return JsonResponse(serialiser.data, safe = False)
 
-    elif request.method == 'POST':
+    elif request.method == 'PUT':
         
         data = JSONParser().parse(request)
-        serialiser = AllocPostSerializer(data=data)    
+        date = data['date']
+        dutyDate = datetime.datetime.strptime(date, '%m/%d/%Y').strftime('%Y-%m-%d')
+        data['date'] = dutyDate
+        # model = Alloc.objects.get(pk=data['allocId'])
+        try:
+             model = Alloc.objects.get(date= dutyDate, staff= data['staff'], session= data['session'])
+        except Alloc.DoesNotExist:
+            model = None
+        serialiser = AllocPostSerializer(model, data=data)    
         
         if serialiser.is_valid():
             serialiser.save()
