@@ -17,6 +17,7 @@ from api.serializers import DutySerializer
 
 # Create your views here.
 
+
 class ExtendedEncoder(DjangoJSONEncoder):
 
     def default(self, o):
@@ -25,16 +26,16 @@ class ExtendedEncoder(DjangoJSONEncoder):
 
         return super().default(o)
 
+
 @api_view(['GET'])
-@permission_classes([IsAuthenticated]) 
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def get_duties(request):
     if request.method == 'GET':
         duties = Duty.objects.all()
         serialiser = DutySerializer(duties, many=True)
         return JsonResponse(serialiser.data, safe=False)
-    return JsonResponse(serialiser.errors, status=400)     
-
+    return JsonResponse(serialiser.errors, status=400)
 
 
 @api_view(['POST'])
@@ -49,6 +50,7 @@ def duties_from_date(request):
         staffArr = data['staffList']
         savedDuties = Alloc.objects.filter(date__range=(date_start, date_end))
         rotaArray = []
+
         for staff in staffArr:
             rotaRow = []
             s = Staff.objects.get(pk=staff)
@@ -71,18 +73,71 @@ def duties_from_date(request):
                 else:
                     dutyRow.append(None)
 
-                
                 test_date += timedelta(days=1)
-                
-            rotaRow.append(dutyRow) 
-                # dutyRow = []
+
+            rotaRow.append(dutyRow)
+            # dutyRow = []
             rotaArray.append(rotaRow)
-            
+
         # next staff
         x = list(rotaArray)
 
-        
         res = json.dumps(x, cls=ExtendedEncoder)
 
         return HttpResponse(res, content_type="application/json")
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@csrf_exempt
+def duty_staff_from_date(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        date_from = data['weekStartStr']
+        date_start = datetime.datetime.strptime(date_from, '%m/%d/%Y')
+        date_end = date_start + timedelta(days=14)
+        dutyIdArr = data['dutyIdArray']
+        savedDuties = Alloc.objects.filter(date__range=(date_start, date_end))
+        rotaArray_duty = []
+
+        for dutyId in dutyIdArr:
+            rotaRow = []
+            duty = Duty.objects.get(pk=dutyId)
+            rotaRow.append(duty)
+            staffRow = []
+            test_date = date_start
+
+            while test_date < date_end:
+                filteredAlloc = savedDuties.filter(duty_id=dutyId).filter(
+                    date=test_date.date()).filter(session='AM')
+                if filteredAlloc:
+                    staffArray = []
+                    for a in filteredAlloc:
+                        staff = Staff.objects.get(pk=a.staff_id)
+                        staffArray.append(staff)
+                    staffRow.append(staffArray)
+                else:
+                    staffRow.append(None)
+
+                filteredAlloc = savedDuties.filter(duty_id=dutyId).filter(
+                    date=test_date.date()).filter(session='PM')
+                if filteredAlloc:
+                    staffArray = []
+                    for a in filteredAlloc:
+                        staff = Staff.objects.get(pk=a.staff_id)
+                        staffArray.append(staff)
+                    staffRow.append(staffArray)
+                else:
+                    staffRow.append(None)
+
+                test_date += timedelta(days=1)
+
+            rotaRow.append(staffRow)
+            rotaArray_duty.append(rotaRow)
+
+        # next staff
+        x = list(rotaArray_duty)
+
+        res = json.dumps(x, cls=ExtendedEncoder)
+
+        return HttpResponse(res, content_type="application/json")
