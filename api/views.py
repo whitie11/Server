@@ -91,12 +91,8 @@ def alloc_list(request):
     elif request.method == 'PUT':
         
         data = JSONParser().parse(request)
-        date = data['date']
-        dutyDate = datetime.datetime.strptime(date, '%m/%d/%Y').strftime('%Y-%m-%d')
-        data['date'] = dutyDate
-        # model = Alloc.objects.get(pk=data['allocId'])
         try:
-             model = Alloc.objects.get(date= dutyDate, staff= data['staff'], session= data['session'])
+             model = Alloc.objects.get(date= data['date'], staff= data['staff'], session= data['session'])
         except Alloc.DoesNotExist:
             model = None
         serialiser = AllocPostSerializer(model, data=data)    
