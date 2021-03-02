@@ -15,6 +15,7 @@ class Staff(models.Model):
     lastName = models.CharField(max_length = 15)
     userName = models.CharField(max_length = 26)
     grade = models.IntegerField()
+    initials = models.CharField(max_length = 3)
 
     def __str__(self):
         return self.userName

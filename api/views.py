@@ -67,7 +67,7 @@ def staff_list(request):
 @csrf_exempt
 def duty_list(request):
     if request.method == 'GET':
-        duty_all = Duty.objects.all()
+        duty_all = Duty.objects.all().order_by('-dutyId')
         serialiser = DutySerializer(duty_all, many = True)
         return JsonResponse(serialiser.data, safe = False)
 
