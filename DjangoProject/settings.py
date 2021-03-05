@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'libraryApp.apps.LibraryappConfig'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
-]
+CORS_ALLOWED_ORIGINS = True
+# [
+#     "http://localhost:4200",
+# ]
 
 
 CORS_ALLOW_CREDENTIALS = True
