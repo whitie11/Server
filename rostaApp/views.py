@@ -14,6 +14,7 @@ from django.forms import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Model
 from api.serializers import DutySerializer
+import dateutil.parser
 
 # Create your views here.
 
@@ -45,7 +46,7 @@ def duties_from_date(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         date_from = data['weekStartStr']
-        date_start = datetime.datetime.strptime(date_from, '%m/%d/%Y')
+        date_start = dateutil.parser.isoparse(date_from)
         date_end = date_start + timedelta(days=14)
         staffArr = data['staffList']
         savedDuties = Alloc.objects.filter(date__range=(date_start, date_end))
@@ -94,7 +95,7 @@ def duty_staff_from_date(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         date_from = data['weekStartStr']
-        date_start = datetime.datetime.strptime(date_from, '%m/%d/%Y')
+        date_start = dateutil.parser.isoparse(date_from)
         date_end = date_start + timedelta(days=14)
         dutyIdArr = data['dutyIdArray']
         savedDuties = Alloc.objects.filter(date__range=(date_start, date_end))

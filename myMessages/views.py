@@ -9,6 +9,7 @@ from myMessages.models import MyMessage
 from rest_framework.parsers import JSONParser
 from myMessages.serializers import MyMessagePostSerializer
 import datetime
+import dateutil
 
 
 
@@ -47,7 +48,7 @@ def all_messages_from_date(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         date_from = data['postedStr']
-        date_obj = datetime.datetime.strptime(date_from, '%m/%d/%Y')
+        date_obj = dateutil.parser.isoparse(date_from)
         messages_from_date = MyMessage.objects.filter(datePosted__gt=date_obj)
         serialiser = MyMessageSerializer(messages_from_date, many=True)
         return JsonResponse(serialiser.data, safe=False)
@@ -61,7 +62,7 @@ def filtered_messages_from_date(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         x = data['postedStr']
-        date_time_obj = datetime.datetime.strptime(x, '%m/%d/%Y')
+        date_time_obj = dateutil.parser.isoparse(x)
         if data['incArchived'] == True:
            messages_from_date = MyMessage.objects.filter(datePosted__gt=date_time_obj )
         else: 

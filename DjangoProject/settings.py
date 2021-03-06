@@ -26,7 +26,7 @@ SECRET_KEY = '!f#4l^oq!)!wq!*1*=uds3*+y**i&w7s=iuu+!r%tj*y*96r5i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['whitie1191.pythonanywhere.com', 'localhost']
 
 
 # Application definition
@@ -46,10 +46,8 @@ INSTALLED_APPS = [
     'libraryApp.apps.LibraryappConfig'
 ]
 
-CORS_ALLOWED_ORIGINS = True
-# [
-#     "http://localhost:4200",
-# ]
+CORS_ALLOWED_ORIGINS = ['https://whitie11.github.io',
+                        'http://localhost:4200']
 
 
 CORS_ALLOW_CREDENTIALS = True
@@ -93,7 +91,7 @@ WSGI_APPLICATION = 'DjangoProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': str(BASE_DIR/'db.sqlite3'),
     }
 }
 
@@ -135,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = str(BASE_DIR / 'static')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -154,10 +153,11 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER':
     #'rest_framework_jwt.utils.jwt_response_payload_handler',
     'api.views.jwt_response_payload_handler',
- 
+
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 
 }
 
 MEDIA_URL =  '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = BASE_DIR.joinpath('media')
