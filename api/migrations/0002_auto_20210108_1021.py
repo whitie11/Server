@@ -10,13 +10,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='alloc',
-            name='isAM',
-        ),
+        # migrations.RemoveField(
+        #     model_name='alloc',
+        #     name='isAM',
+        # ),
         migrations.AddField(
             model_name='alloc',
             name='session',
-            field=models.CharField(choices=[('AM', 'morning'), ('PM', 'afternoon')], default='morning', max_length=2),
+            field=models.CharField(choices=[('AM', 'morning'), ('PM', 'afternoon')], default='AM', max_length=2),
         ),
     ]
