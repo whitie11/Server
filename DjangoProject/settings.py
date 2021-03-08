@@ -95,6 +95,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#      'default': {
+#          'ENGINE': 'django.db.backends.mysql',
+#          'NAME': 'whitie1191$rostaDB',
+#          'USER': 'whitie1191',
+#          'PASSWORD': 'P@ssw0rd1',
+#          'HOST': 'whitie1191.mysql.pythonanywhere-services.com', }
+#          }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
