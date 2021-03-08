@@ -35,7 +35,7 @@ class Alloc(models.Model):
 
     allocId = models.AutoField(primary_key = True)
     date = models.DateField()
-    session = models.CharField(max_length = 2, choices = SESSION_CHOICE, default = 'morning')
+    session = models.CharField(max_length = 2, choices = SESSION_CHOICE, default = 'AM')
     duty = models.ForeignKey(Duty, null = True, on_delete=models.SET_NULL)
     staff = models.ForeignKey(Staff, null = True, on_delete=models.SET_NULL)
 
