@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'myMessages.apps.MymessagesConfig',
-    'libraryApp.apps.LibraryappConfig'
+    'libraryApp.apps.LibraryappConfig',
+    'rostaApp.apps.RostaappConfig',
+    'django_mysql',
 ]
 
 CORS_ALLOWED_ORIGINS = ['https://whitie11.github.io',

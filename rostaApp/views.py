@@ -15,8 +15,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Model
 from api.serializers import DutySerializer
 import dateutil.parser
-
-# Create your views here.
+from rostaApp.models import Config
+from rostaApp.serializers import ConfigSerializer
 
 
 class ExtendedEncoder(DjangoJSONEncoder):
@@ -142,3 +142,41 @@ def duty_staff_from_date(request):
         res = json.dumps(x, cls=ExtendedEncoder)
 
         return HttpResponse(res, content_type="application/json")
+
+
+@api_view(['GET', 'PUT', 'POST'])
+@permission_classes([IsAuthenticated])
+@csrf_exempt
+def config(request):
+    if request.method == 'GET':
+        config = Config.objects.all()
+        serialiser = ConfigSerializer(config, many=True)
+        return JsonResponse(serialiser.data, safe=False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        try:
+            model = Config.objects.get(
+                userId=data['userId'])
+        except Config.DoesNotExist:
+            model = None
+
+        serialiser = ConfigSerializer(model, data=data)
+
+        if serialiser.is_valid():
+            serialiser.save()
+            return JsonResponse(serialiser.data, status=201)
+        return JsonResponse(serialiser.errors, status=400)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        data1 = data['userId']
+        try:
+            model = Config.objects.get(
+                userId=data1)
+        except Config.DoesNotExist:
+            return JsonResponse('User Config not found', status=400)
+
+        serialiser = ConfigSerializer(model)
+        return JsonResponse(serialiser.data, status=201)
+          

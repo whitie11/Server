@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from myMessages.models import MyMessage
 from api.models import Duty, Staff
-
+from rostaApp.models import Config
 
 
 class StaffSerializer(serializers.ModelSerializer):  
@@ -22,3 +22,8 @@ class RotaSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyMessage
         fields = ('id', 'subject', 'body', 'isActive', 'datePosted', 'postedBy')    
+
+class ConfigSerializer(serializers.ModelSerializer):  
+    class Meta:
+        model = Config
+        fields = ('__all__')        

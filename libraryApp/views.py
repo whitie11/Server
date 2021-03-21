@@ -39,7 +39,7 @@ def download_file(request):
      filename = data['fileStr']
      # fill these variables with real values
      # filename = "/PRH_Map_1000x750_2016_March_web.pdf"
-     fl_path = MEDIA_ROOT + filename
+     fl_path = str(MEDIA_ROOT) + filename
      
 
      fl = open(fl_path, 'rb')
