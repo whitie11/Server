@@ -54,12 +54,11 @@ def user_list(request):
 @permission_classes([IsAuthenticated, ])
 def staff_list(request):
     if request.method == 'GET':
-        staff_all = Staff.objects.all()
+        staff_all = Staff.objects.all().order_by('-grade')
         serialiser = StaffSerializer(staff_all, many=True)
         return JsonResponse(serialiser.data, safe=False)
 
     elif request.method == 'POST':
-
         data = JSONParser().parse(request)
         serialiser = StaffSerializer(data=data)
 
@@ -67,7 +66,6 @@ def staff_list(request):
             serialiser.save()
             return JsonResponse(serialiser.data, status=201)
         return JsonResponse(serialiser.errors, status=400)
-
 
 @csrf_exempt
 def duty_list(request):

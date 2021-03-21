@@ -175,7 +175,7 @@ def config(request):
             model = Config.objects.get(
                 userId=data1)
         except Config.DoesNotExist:
-            return JsonResponse('User Config not found', status=400)
+            return JsonResponse('User Config not found', status=400, safe=False)
 
         serialiser = ConfigSerializer(model)
         return JsonResponse(serialiser.data, status=201)
