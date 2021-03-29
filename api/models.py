@@ -4,16 +4,20 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Profile(models.Model):
-    ROLE_CHOICE =[('SuperUser','Super User'), ('StdUser', 'Standard User')]
+    ROLE_CHOICE =[('SuperUser','Super User'), ('StdUser', 'Standard User'), ('Guest', 'Guest')]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length = 20, choices = ROLE_CHOICE, default = 'Standard User')
+    role = models.CharField(max_length = 20, choices = ROLE_CHOICE, default = 'Guest')
+    
+    def __str__(self):
+        return str(self.user)
+
 
 class Staff(models.Model):
     staffId = models.AutoField(primary_key = True)
     firstName = models.CharField(max_length = 10)
     lastName = models.CharField(max_length = 15)
-    userName = models.CharField(max_length = 26)
+    userName = models.CharField(max_length = 26, unique = True)
     grade = models.IntegerField()
     initials = models.CharField(max_length = 3)
 
@@ -26,6 +30,7 @@ class Duty(models.Model):
     dutyId = models.AutoField(primary_key = True)
     dutyType = models.CharField(max_length = 50)   
     dutyCode = models.CharField(max_length = 2) 
+    sortIndex = models.DecimalField(max_digits=6, decimal_places=2, default=1.0 )
 
     def __str__(self):
         return self.dutyType
@@ -41,6 +46,10 @@ class Alloc(models.Model):
 
     class Meta:
         unique_together =('date', 'session', 'staff')
+
+    def __str__(self):
+        return (str(self.date) + ' ' + self.session + ' ' + str(self.staff))
+    
 
 class ToDo(models.Model):
     id = models.AutoField(primary_key = True)

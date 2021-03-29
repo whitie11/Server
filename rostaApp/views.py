@@ -33,7 +33,7 @@ class ExtendedEncoder(DjangoJSONEncoder):
 @csrf_exempt
 def get_duties(request):
     if request.method == 'GET':
-        duties = Duty.objects.all()
+        duties = Duty.objects.all().order_by('sortIndex')
         serialiser = DutySerializer(duties, many=True)
         return JsonResponse(serialiser.data, safe=False)
     return JsonResponse(serialiser.errors, status=400)
@@ -155,6 +155,7 @@ def config(request):
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
+
         try:
             model = Config.objects.get(
                 userId=data['userId'])

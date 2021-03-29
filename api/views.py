@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import JSONParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated, AllowAny
 from .models import Staff, Duty, Alloc
 from .serializers import StaffSerializer, DutySerializer, AllocSerializer, AllocPostSerializer
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +10,7 @@ from .forms import UserForm, ProfileForm
 from django.contrib import messages
 from api.serializers import ToDoSerializer, UserSerializer
 from api.models import ToDo
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 import datetime
 
 # Create your views here.
@@ -67,10 +67,11 @@ def staff_list(request):
             return JsonResponse(serialiser.data, status=201)
         return JsonResponse(serialiser.errors, status=400)
 
+
 @csrf_exempt
 def duty_list(request):
     if request.method == 'GET':
-        duty_all = Duty.objects.all().order_by('-dutyId')
+        duty_all = Duty.objects.all().order_by('sortIndex')
         serialiser = DutySerializer(duty_all, many=True)
         return JsonResponse(serialiser.data, safe=False)
 
@@ -85,6 +86,18 @@ def duty_list(request):
         return JsonResponse(serialiser.errors, status=400)
 
 
+def is_in_group(user, group_name):
+    """
+    Takes a user and a group name, and returns `True` if the user is in that group.
+    """
+    try:
+        return Group.objects.get(name=group_name).user_set.filter(id=user.id).exists()
+    except Group.DoesNotExist:
+        return None
+
+
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def alloc_list(request):
     if request.method == 'GET':
@@ -93,6 +106,10 @@ def alloc_list(request):
         return JsonResponse(serialiser.data, safe=False)
 
     elif request.method == 'PUT':
+        user = request.user
+        if (is_in_group(user, 'rota_manager') == False):
+           return JsonResponse({'message': 'Not in authorised group'}, status=401)
+  
 
         data = JSONParser().parse(request)
         try:
