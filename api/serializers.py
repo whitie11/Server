@@ -18,13 +18,13 @@ class AllocSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Alloc
-        fields = ('allocId', 'date', 'session', 'duty', 'staff')
+        fields = ('allocId', 'date', 'session', 'duty', 'staff', 'savedBy', 'created', 'modified')
     
 class AllocPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Alloc
-        fields = ('allocId', 'date', 'session', 'duty', 'staff')
+        fields = ('allocId', 'date', 'session', 'duty', 'staff', 'savedBy')
 
 class ToDoSerializer(serializers.ModelSerializer):
     class Meta:

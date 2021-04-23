@@ -89,6 +89,7 @@ def duty_list(request):
 def is_in_group(user, group_name):
     """
     Takes a user and a group name, and returns `True` if the user is in that group.
+
     """
     try:
         return Group.objects.get(name=group_name).user_set.filter(id=user.id).exists()
@@ -107,9 +108,9 @@ def alloc_list(request):
 
     elif request.method == 'PUT':
         user = request.user
-        if (is_in_group(user, 'rota_manager') == False):
-           return JsonResponse({'message': 'Not in authorised group'}, status=401)
-  
+        inGroup = is_in_group(user, 'rota_manager')
+        if (inGroup != True):
+            return JsonResponse({'message': 'Not in authorised group'}, status=401)
 
         data = JSONParser().parse(request)
         try:
@@ -117,6 +118,7 @@ def alloc_list(request):
                 date=data['date'], staff=data['staff'], session=data['session'])
         except Alloc.DoesNotExist:
             model = None
+            
         serialiser = AllocPostSerializer(model, data=data)
 
         if serialiser.is_valid():
