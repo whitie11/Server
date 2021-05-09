@@ -67,6 +67,24 @@ class Alloc(models.Model):
         return super(Alloc, self).save(*args, **kwargs)
 
 
+class AllocLog(models.Model):
+    allocLogId = models.AutoField(primary_key=True)
+    allocId = models.IntegerField()
+    date = models.DateField()
+    session = models.CharField(max_length=2)
+    duty = models.ForeignKey(Duty, null=True, on_delete=models.SET_NULL)
+    staff = models.ForeignKey(Staff, null=True, on_delete=models.SET_NULL)
+    savedBy = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    created = models.DateTimeField(editable=False)
+    modified = models.DateTimeField()
+
+    def __str__(self):
+        return (str(self.date) + ' ' + self.session + ' ' + str(self.staff))
+
+
+
+
+
 class ToDo(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
