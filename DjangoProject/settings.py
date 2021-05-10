@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     'myMessages.apps.MymessagesConfig',
     'libraryApp.apps.LibraryappConfig',
     'rostaApp.apps.RostaappConfig',
+    'mobileRostaApp.apps.MobilerostaappConfig',
     'django_mysql',
 ]
 
 CORS_ALLOWED_ORIGINS = ['https://whitie11.github.io',
-                        'http://localhost:4200']
+                        'http://localhost:4200',
+                        'http://localhost:50692']
 
 
 CORS_ALLOW_CREDENTIALS = True

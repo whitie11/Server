@@ -28,5 +28,6 @@ urlpatterns = [
     path('messages/', include('myMessages.urls')),
     path('library/', include('libraryApp.urls')),
     path('rosta/', include('rostaApp.urls')),
+    path('mobile/', include('mobileRostaApp.urls'))
 ]
 

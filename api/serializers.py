@@ -34,12 +34,13 @@ class ToDoSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('id', 'role', 'user_id') 
+        fields = ('id', 'role', 'user_id', 'staff_id') 
 
 
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    # staff = StaffSerializer()
     class Meta:
         model = User
         fields = ('id', 'password', 'username', 'first_name', 'is_staff', 'is_active', 'is_superuser', 'profile')

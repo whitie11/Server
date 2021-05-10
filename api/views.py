@@ -37,7 +37,8 @@ def register(request):
 def jwt_response_payload_handler(token, user=None, request=None):
     return {
         'token': token,
-        'role': user.profile.role
+        'role': user.profile.role,
+        'staffId': user.profile.staff.staffId
     }
 
 
