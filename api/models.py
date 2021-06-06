@@ -88,7 +88,7 @@ class ToDo(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
     isCompleted = models.BooleanField()
-    title = models.CharField(max_length=50)
+   
 
 # class Message(models.Model):
 #     id = models.AutoField(primary_key = True)
